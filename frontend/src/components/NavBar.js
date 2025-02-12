@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useLogout } from '../hooks/useLogout.js'
 import { useAuthContext } from '../hooks/useAuthContext.js'
 
-const Navbar = () => {
+const NavBar = () => {
   const { logout } = useLogout()
   const { user } = useAuthContext()
 
@@ -35,4 +35,4 @@ const Navbar = () => {
   )
 }
 
-export default Navbar
+export default NavBar
