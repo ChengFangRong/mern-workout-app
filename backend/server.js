@@ -1,50 +1,36 @@
-require("dotenv").config();
- 
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
- 
-// Import routes
-const workoutRoutes = require("./routes/workouts");
- 
-// Initialize express app
-const app = express();
- 
-// Middleware
-app.use(express.json()); // Parse JSON data in request bodies
-app.use(cors()); // Enable Cross-Origin Resource Sharing for frontend-backend communication
- 
-// Log the request method and path for debugging
+require('dotenv').config()
+
+const express = require('express')
+const mongoose = require('mongoose')
+const workoutRoutes = require('./routes/workouts')
+const userRoutes = require('./routes/user')
+const cors = require('cors')
+
+// express app
+const app = express()
+
+// middleware
+app.use(express.json())
+app.use(cors())
+
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
-  next();
-});
- 
-// Routes
-app.use("/api/workouts", workoutRoutes);
- 
-// MongoDB Connection
-mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  console.log(req.path, req.method)
+  next()
+})
+
+// routes
+app.use('/api/workouts', workoutRoutes)
+app.use('/api/user', userRoutes)
+
+// connect to db
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("Connected to MongoDB");
-    // Start server only after DB connection is established
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+    console.log('connected to database')
+    // listen to port
+    app.listen(process.env.PORT, () => {
+      console.log('listening for requests on port', process.env.PORT)
+    })
   })
   .catch((err) => {
-    console.error("Failed to connect to MongoDB:", err.message);
-  });
- 
-// Default route for testing the server
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
- 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: "Something went wrong on the server" });
-});
+    console.log(err)
+  }) 
